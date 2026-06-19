@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Ayuda - FocusFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #151820;
+    --surface2: #1c1f2b;
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --text: #f0f0f8;
+    --muted: #8b8fa8;
+    --border: rgba(108,99,255,0.18);
+    --pill-bg: rgba(108,99,255,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG effect */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(108,99,255,0.13) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 1.5rem 0;
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .app-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--text);
+  }
+  .app-name span { color: var(--accent2); }
+
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 2rem;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 span {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 480px;
+    line-height: 1.7;
+  }
+
+  /* Search bar */
+  .search-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto 2.5rem;
+    padding: 0 1.5rem;
+  }
+  .search-bar {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 20px 14px 50px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search-bar:focus { border-color: var(--accent); }
+  .search-bar::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute;
+    left: 36px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 18px;
+    pointer-events: none;
+  }
+
+  /* Category tabs */
+  .tabs-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto 1.5rem;
+    padding: 0 1.5rem;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--accent2); color: var(--accent2); }
+  .tab.active { background: var(--pill-bg); border-color: var(--accent); color: var(--accent2); font-weight: 500; }
+
+  /* Main content */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  .section { margin-bottom: 2.5rem; }
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Accordion */
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 8px;
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .faq-item:hover { border-color: rgba(108,99,255,0.35); }
+  .faq-item.open { border-color: var(--accent); background: var(--surface2); }
+
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .faq-q .chevron {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--pill-bg);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform .3s, background .2s;
+    color: var(--accent2);
+    font-size: 14px;
+  }
+  .faq-item.open .faq-q .chevron { transform: rotate(180deg); background: var(--accent); color: #fff; }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease;
+  }
+  .faq-a-inner {
+    padding: 0 20px 18px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .faq-a-inner ul {
+    margin: 8px 0 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .faq-a-inner ul li::marker { color: var(--accent2); }
+
+  /* Contact footer */
+  .contact-card {
+    margin-top: 3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .contact-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .contact-card p { color: var(--muted); font-size: 14px; }
+  .contact-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+  }
+  .btn-primary:hover { background: #7c74ff; }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* no-results */
+  .no-results { display: none; text-align: center; padding: 3rem 0; color: var(--muted); }
+  .no-results.show { display: block; }
+
+  @media (max-width: 540px) {
+    .hero { padding: 2rem 1.25rem 1.5rem; }
+    .faq-q { font-size: 14px; padding: 15px 16px; }
+    .faq-a-inner { padding: 0 16px 15px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">F</div>
+  <div class="app-name">Focus<span>Flow</span></div>
+</header>
+
+<div class="hero">
+  <h1>Centro de <span>Ayuda</span></h1>
+  <p>Encuentra respuestas rápidas sobre el uso de FocusFlow. ¿No encuentras lo que buscas? Escríbenos.</p>
+</div>
+
+<div class="search-wrap">
+  <span class="search-icon">🔍</span>
+  <input class="search-bar" type="text" placeholder="Buscar una pregunta..." id="searchInput" oninput="filterFAQ()">
+</div>
+
+<div class="tabs-wrap" id="tabs">
+  <button class="tab active" onclick="filterCategory('all', this)">Todas</button>
+  <button class="tab" onclick="filterCategory('cuenta', this)">Cuenta</button>
+  <button class="tab" onclick="filterCategory('tareas', this)">Tareas y rutinas</button>
+  <button class="tab" onclick="filterCategory('pomodoro', this)">Modo enfoque</button>
+  <button class="tab" onclick="filterCategory('chatbot', this)">Chatbot</button>
+  <button class="tab" onclick="filterCategory('enlace', this)">Vinculación</button>
+  <button class="tab" onclick="filterCategory('config', this)">Configuración</button>
+  <button class="tab" onclick="filterCategory('privacidad', this)">Privacidad</button>
+  <button class="tab" onclick="filterCategory('problemas', this)">Problemas</button>
+</div>
+
+<main>
+  <div id="faqContainer"></div>
+  <div class="no-results" id="noResults">No se encontraron resultados para tu búsqueda.</div>
+
+  <div class="contact-card">
+    <div>
+      <h3>¿Aún tienes dudas?</h3>
+      <p>Nuestro equipo está disponible para ayudarte.</p>
+    </div>
+    <div class="contact-btns">
+      <a class="btn btn-primary" href="https://wa.me/51934574931">💬 WhatsApp</a>
+      <a class="btn btn-outline" href="mailto:appmovilesneo@gmail.com">✉️ Correo</a>
+    </div>
+  </div>
+</main>
+
+<script>
+const faqs = [
+  {
+    category: 'cuenta',
+    section: '🔐 Inicio de sesión y cuenta',
+    items: [
+      { q: '¿Cómo inicio sesión en FocusFlow?', a: 'Debes usar tu cuenta de Google. Al abrir la app por primera vez, presiona "Iniciar sesión con Google" y selecciona tu cuenta. La app solo acepta cuentas de Google.' },
+      { q: '¿Puedo usar la app sin iniciar sesión?', a: 'No. FocusFlow requiere una cuenta de Google para sincronizar tus tareas y rutinas entre dispositivos.' },
+      { q: '¿Cómo cierro sesión?', a: 'Presiona los tres puntos verticales (⋮) en la esquina superior derecha de la pantalla principal y selecciona "Cerrar sesión".' },
+      { q: '¿Qué hago si el inicio con Google no funciona?', a: 'Verifica que tengas una cuenta de Google activa en tu dispositivo. Asegúrate de tener conexión a internet. Si el problema persiste, reinicia la app o el dispositivo.' },
+    ]
+  },
+  {
+    category: 'tareas',
+    section: '✅ Tareas y rutinas',
+    items: [
+      { q: '¿Cómo creo una rutina?', a: 'En la pestaña "Tareas", presiona el botón flotante (+), selecciona "Rutina", ingresa un nombre y confirma. Luego puedes agregar tareas dentro de esa rutina.' },
+      { q: '¿Cómo agrego una tarea?', a: 'Desde la pestaña "Tareas", presiona el botón (+), selecciona "Tarea", elige la rutina a la que pertenece, escribe el título, asigna un horario (opcional) y una ubicación (opcional).' },
+      { q: '¿Qué significan los estados de las tareas?', a: '<ul><li><strong>Activa</strong> — La tarea está en curso o por realizar hoy</li><li><strong>Pendiente</strong> — La tarea aún no se ha completado</li><li><strong>Completada</strong> — La tarea fue finalizada</li></ul>' },
+      { q: '¿Cómo completo una tarea?', a: 'Desde la pestaña "Tareas", presiona el botón "Finalizar tarea" en la tarjeta de la tarea activa. También puedes confirmarla desde la pantalla de inicio.' },
+      { q: '¿Puedo agregar una ubicación a mi tarea?', a: 'Sí. Al crear o editar una tarea, presiona el ícono de ubicación para abrir el mapa y seleccionar un lugar. La dirección se guardará automáticamente en la tarea.' },
+    ]
+  },
+  {
+    category: 'pomodoro',
+    section: '⏱️ Modo enfoque (Pomodoro)',
+    items: [
+      { q: '¿Cómo funciona el temporizador de enfoque?', a: 'Configura la duración de enfoque, descanso y descanso largo usando los controles deslizantes. Luego presiona "Iniciar enfoque". La app alternará entre períodos de enfoque y descanso según los ciclos que configures.' },
+      { q: '¿Puedo pausar el temporizador?', a: 'Sí. Durante una sesión de enfoque o descanso, presiona el botón "Pausa" para detener el tiempo. Presiona "Reanudar" para continuar.' },
+      { q: '¿Qué pasa si cierro la app durante el enfoque?', a: 'El temporizador se detendrá. Al volver a la app, deberás iniciar una nueva sesión.' },
+      { q: '¿Puedo saltarme un descanso?', a: 'Sí. Durante un descanso, presiona "Saltar descanso" para pasar al siguiente ciclo de enfoque.' },
+      { q: '¿Cuántos ciclos debo hacer?', a: 'Puedes configurar entre 1 y 6 ciclos. La app sugiere 4 ciclos, pero puedes ajustarlo según tu capacidad de concentración.' },
+    ]
+  },
+  {
+    category: 'chatbot',
+    section: '🤖 Asistente Chompibiris (Chatbot)',
+    items: [
+      { q: '¿Qué es el asistente Chompibiris?', a: 'Es un chatbot con inteligencia artificial que te ayuda a generar rutinas personalizadas según cómo te sientes o lo que quieres lograr.' },
+      { q: '¿Las respuestas del chatbot son de un profesional?', a: 'No. Las respuestas son generadas por inteligencia artificial (Groq AI). No reemplazan el consejo de un profesional de la salud mental.' },
+      { q: '¿Qué tipo de preguntas puedo hacerle?', a: 'Puedes pedirle rutinas de estudio, trabajo, relajación o cualquier actividad. Por ejemplo: "Quiero una rutina para estudiar matemáticas" o "Necesito concentrarme para terminar un proyecto".' },
+      { q: '¿Qué son las rutinas sorpresa?', a: 'Son rutinas predefinidas creadas por especialistas ficticios (Dra. Luna, Dr. Leo, etc.). Puedes obtener una aleatoria presionando "Rutina Sorpresa".' },
+    ]
+  },
+  {
+    category: 'enlace',
+    section: '🔗 Vinculación entre dispositivos',
+    items: [
+      { q: '¿Cómo vinculo mi cuenta con otro dispositivo?', a: 'En la pestaña "Enlace", verás un código QR único. Desde el otro dispositivo, abre FocusFlow y escanea ese código con la cámara o desde la galería.' },
+      { q: '¿Puedo compartir tareas con otro dispositivo?', a: 'Sí. Una vez vinculado, puedes asignar tareas y rutinas al dispositivo vinculado desde la misma pantalla.' },
+      { q: '¿Es seguro compartir mi código QR?', a: 'El código QR es privado y personal. Solo compártelo con personas de confianza. Si alguien más lo escanea, podrá ver tu información.' },
+    ]
+  },
+  {
+    category: 'cuenta',
+    section: '🏠 Pantalla de inicio',
+    items: [
+      { q: '¿Cómo registro mi estado de ánimo?', a: 'En la pantalla de inicio, presiona "¿Cómo te sientes hoy?" y selecciona el estado de ánimo que mejor describa cómo estás.' },
+      { q: '¿Qué es la racha (streak)?', a: 'Es un contador de días consecutivos que has usado la app. Aparece junto a tu nombre en la pantalla de inicio. Entre más días seguidos uses la app, más grande será tu racha.' },
+      { q: '¿Cómo funciona la frase motivacional?', a: 'Cada vez que abres la app, aparece una frase motivacional diferente. Puedes presionar "Nueva frase" para cambiarla.' },
+      { q: '¿Por qué aparece una sugerencia del clima?', a: 'La app usa tu ubicación aproximada para mostrar el clima actual y sugerir actividades según las condiciones del día. Puedes cerrar la sugerencia si no te interesa.' },
+    ]
+  },
+  {
+    category: 'config',
+    section: '⚙️ Configuración',
+    items: [
+      { q: '¿Cómo activo el modo oscuro?', a: 'Ve a "Configuración" desde el menú de tres puntos (⋮) y activa el interruptor "Modo oscuro".' },
+      { q: '¿Qué son los colores dinámicos?', a: 'Es una función disponible en Android 12+ que adapta los colores de la app a los colores de tu fondo de pantalla.' },
+      { q: '¿Cómo elimino mi cuenta?', a: 'Actualmente no hay un botón de eliminar cuenta dentro de la app. Para solicitar la eliminación de tus datos, escríbenos a appmovilesneo@gmail.com o a nuestro WhatsApp +51 934 574 931.' },
+    ]
+  },
+  {
+    category: 'privacidad',
+    section: '🔒 Datos y privacidad',
+    items: [
+      { q: '¿Dónde se almacenan mis datos?', a: 'Tus tareas y rutinas se almacenan en Firebase Realtime Database (Google Cloud, servidores en EE.UU.). Tu información de inicio de sesión se gestiona a través de Firebase Authentication.' },
+      { q: '¿Puedo usar la app sin conexión a internet?', a: 'La app requiere conexión para iniciar sesión y sincronizar datos. Algunas funciones como el temporizador de enfoque pueden funcionar sin conexión una vez que hayas iniciado sesión.' },
+    ]
+  },
+  {
+    category: 'problemas',
+    section: '🛠️ Solución de problemas',
+    items: [
+      { q: 'La app no abre o se cierra inesperadamente.', a: 'Asegúrate de tener la versión más reciente instalada. Reinicia tu dispositivo. Si el problema persiste, contáctanos.' },
+      { q: 'No recibo notificaciones de recordatorios.', a: 'Verifica que los permisos de notificación estén habilitados para FocusFlow en los ajustes del sistema. También revisa que no esté activado el "No molestar".' },
+      { q: 'El chatbot no responde.', a: 'Verifica tu conexión a internet. El chatbot requiere conexión para generar respuestas a través de la API de Groq AI.' },
+    ]
+  },
+];
+
+let currentCategory = 'all';
+
+function renderFAQ(data) {
+  const container = document.getElementById('faqContainer');
+  container.innerHTML = '';
+  let total = 0;
+  data.forEach(section => {
+    if (section.items.length === 0) return;
+    total += section.items.length;
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    sec.innerHTML = `<div class="section-label">${section.section}</div>`;
+    section.items.forEach((item, i) => {
+      const el = document.createElement('div');
+      el.className = 'faq-item';
+      el.dataset.category = section.category;
+      el.innerHTML = `
+        <button class="faq-q" onclick="toggle(this)">
+          <span>${item.q}</span>
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">${item.a}</div>
+        </div>`;
+      sec.appendChild(el);
+    });
+    container.appendChild(sec);
+  });
+  document.getElementById('noResults').classList.toggle('show', total === 0);
+}
+
+function toggle(btn) {
+  const item = btn.closest('.faq-item');
+  const ans = item.querySelector('.faq-a');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-a').style.maxHeight = null;
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    ans.style.maxHeight = ans.scrollHeight + 'px';
+  }
+}
+
+function filterCategory(cat, tabEl) {
+  currentCategory = cat;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+  document.getElementById('searchInput').value = '';
+  applyFilters();
+}
+
+function filterFAQ() { applyFilters(); }
+
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const filtered = faqs.map(section => {
+    if (currentCategory !== 'all' && section.category !== currentCategory) return { ...section, items: [] };
+    const items = section.items.filter(item =>
+      !q || item.q.toLowerCase().includes(q) || item.a.toLowerCase().includes(q)
+    );
+    return { ...section, items };
+  });
+  renderFAQ(filtered);
+}
+
+renderFAQ(faqs);
+</script>
+</body>
+</html>
